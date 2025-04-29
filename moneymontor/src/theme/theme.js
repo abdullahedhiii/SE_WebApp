@@ -4,26 +4,26 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#C62828', // Deep professional red
+      main: '#000', // Black
       contrastText: '#fff',
     },
     secondary: {
-      main: '#FFD600', // Gold accent
-      contrastText: '#212121',
+      main: '#fff', // White
+      contrastText: '#000',
     },
     background: {
-      default: '#F5F5F5',
+      default: '#fff',
       paper: '#fff',
     },
-    error: { main: '#C62828' },
-    warning: { main: '#FFD600' },
-    info: { main: '#1976d2' },
-    success: { main: '#388e3c' },
+    error: { main: '#000' },
+    warning: { main: '#888' },
+    info: { main: '#888' },
+    success: { main: '#888' },
     text: {
-      primary: '#212121',
-      secondary: '#757575',
+      primary: '#000',
+      secondary: '#888',
     },
-    divider: '#E0E0E0',
+    divider: '#ccc',
   },
   typography: {
     fontFamily: 'Inter, Roboto, Arial, sans-serif',
@@ -45,7 +45,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           background: '#fff',
-          boxShadow: '0 2px 8px 0 rgba(33,40,50,0.06)',
+          boxShadow: '0 2px 8px 0 rgba(0,0,0,0.06)',
           borderRadius: 12,
         },
       },
@@ -54,7 +54,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           background: '#fff',
-          boxShadow: '0 2px 8px 0 rgba(33,40,50,0.08)',
+          boxShadow: '0 2px 8px 0 rgba(0,0,0,0.08)',
           borderRadius: 12,
         },
       },
@@ -69,8 +69,10 @@ const theme = createTheme({
           padding: '0 24px',
           boxShadow: 'none',
           textTransform: 'none',
+          background: '#000',
+          color: '#fff',
           '&:hover': {
-            background: '#B71C1C',
+            background: '#222',
             color: '#fff',
             boxShadow: 'none',
           },

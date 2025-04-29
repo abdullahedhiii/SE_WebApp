@@ -41,12 +41,12 @@ const options = {
   responsive: true,
   plugins: {
     legend: { display: true, labels: { font: { weight: 'bold' } } },
-    title: { display: true, text: 'Spending Forecast (Next 6 Months)', color: '#00C9A7', font: { size: 18, weight: 'bold' } },
+    title: { display: true, text: 'Spending Forecast (Next 6 Months)', color: '#000', font: { size: 18, weight: 'bold' } },
     tooltip: {
-      backgroundColor: 'rgba(0,201,167,0.9)',
-      titleColor: '#FFD93D',
+      backgroundColor: 'rgba(0,0,0,0.9)',
+      titleColor: '#888',
       bodyColor: '#fff',
-      borderColor: '#FFD93D',
+      borderColor: '#888',
       borderWidth: 1,
     },
   },

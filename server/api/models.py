@@ -22,7 +22,7 @@ class SubUser(models.Model):
 class Category(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories')
     name = models.CharField(max_length=50)
-    icon = models.CharField(max_length=50, blank=True)  # Optional
+    #icon = models.CharField(max_length=50, blank=True)  
 
     def __str__(self):
         return f"{self.name} ({self.owner.username})"

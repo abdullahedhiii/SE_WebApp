@@ -9,7 +9,7 @@ import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 const clusters = [
   {
     label: 'Food',
-    color: '#6C63FF',
+    color: '#000',
     icon: <FastfoodIcon />, 
     expenses: [
       { name: 'Pizza', amount: 20 },
@@ -18,7 +18,7 @@ const clusters = [
   },
   {
     label: 'Transport',
-    color: '#00C9A7',
+    color: '#888',
     icon: <DirectionsBusIcon />, 
     expenses: [
       { name: 'Bus Ticket', amount: 3 },
@@ -27,7 +27,7 @@ const clusters = [
   },
   {
     label: 'Shopping',
-    color: '#FFD93D',
+    color: '#000',
     icon: <ShoppingBagIcon />, 
     expenses: [
       { name: 'T-shirt', amount: 25 },
@@ -36,7 +36,7 @@ const clusters = [
   },
   {
     label: 'Health',
-    color: '#FF6B6B',
+    color: '#888',
     icon: <LocalHospitalIcon />, 
     expenses: [
       { name: 'Medicine', amount: 12 },
@@ -64,7 +64,7 @@ export default function ClusteringPage() {
       <Grid container spacing={3}>
         {clusters.map((cluster) => (
           <Grid item xs={12} sm={6} md={3} key={cluster.label}>
-            <Paper elevation={6} sx={{ p: 3, borderRadius: 5, background: 'rgba(255,255,255,0.92)', boxShadow: `0 8px 32px 0 ${cluster.color}33`, backdropFilter: 'blur(8px)', minHeight: 180 }}>
+            <Paper elevation={6} sx={{ p: 3, borderRadius: 5, background: 'rgba(255,255,255,0.92)', boxShadow: `0 8px 32px 0 #0002`, backdropFilter: 'blur(8px)', minHeight: 180 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Avatar sx={{ bgcolor: cluster.color, mr: 1 }}>{cluster.icon}</Avatar>
                 <Typography variant="h6" fontWeight={700} color={cluster.color}>{cluster.label}</Typography>

@@ -34,6 +34,8 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import GroupIcon from '@mui/icons-material/Group';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import InfoIcon from '@mui/icons-material/Info';
 import AddFamilyMemberForm from '../components/family/AddFamilyMemberForm';
 
 // Initial mock data for family members
@@ -43,7 +45,7 @@ const initialMembers = [
     name: 'John Doe',
     email: 'john.doe@example.com',
     role: 'admin',
-    avatarColor: '#6C63FF',
+    avatarColor: '#000',
     initials: 'JD',
     allowBudgetEditing: true,
     allowExpenseTracking: true,
@@ -55,7 +57,7 @@ const initialMembers = [
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     role: 'contributor',
-    avatarColor: '#00C9A7',
+    avatarColor: '#888',
     initials: 'JS',
     allowBudgetEditing: true,
     allowExpenseTracking: true,
@@ -67,7 +69,7 @@ const initialMembers = [
     name: 'Mike Johnson',
     email: 'mike.j@example.com',
     role: 'viewer',
-    avatarColor: '#FFD93D',
+    avatarColor: '#000',
     initials: 'MJ',
     allowBudgetEditing: false,
     allowExpenseTracking: false,
@@ -87,9 +89,9 @@ const getRoleLabel = (role) => {
 
 const getRoleColor = (role) => {
   const colors = {
-    admin: 'primary',
-    contributor: 'success',
-    viewer: 'info'
+    admin: '#000',
+    contributor: '#888',
+    viewer: '#000',
   };
   return colors[role] || 'default';
 };
@@ -168,6 +170,12 @@ export default function FamilyMembersPage() {
       {notification.show && (
         <Alert 
           severity={notification.type}
+          iconMapping={{
+            success: <CheckCircleOutlineIcon sx={{ color: '#000' }} />, 
+            error: <CancelOutlinedIcon sx={{ color: '#000' }} />,
+            warning: <WarningAmberIcon sx={{ color: '#' }} />,
+            info: <InfoIcon sx={{ color: '#000' }} />,
+          }}
           sx={{ 
             position: 'fixed', 
             top: 16, 
@@ -367,8 +375,8 @@ export default function FamilyMembersPage() {
         sx={{ 
           p: 3, 
           borderRadius: 3, 
-          background: '#f7f9fc', 
-          border: '1px solid #eef2f6',
+          background: '#fff', 
+          border: '1px solid #ccc',
           boxShadow: '0 2px 12px rgba(0,0,0,0.03)',
         }}
       >

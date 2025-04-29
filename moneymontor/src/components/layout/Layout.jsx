@@ -125,11 +125,11 @@ export default function Layout() {
           </IconButton>
           <Avatar sx={{ bgcolor: 'primary.main', color: '#fff', width: 36, height: 36, fontSize: 20, mr: 1 }}>💸</Avatar>
           <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 700, letterSpacing: 0.5, color: 'primary.main', fontSize: '1.15rem', flexGrow: 1 }}>
-            MoneyMontor
+            MoneyMentor
           </Typography>
           <IconButton color="secondary" onClick={handleNotifClick} sx={{ ml: 2 }}>
             <Badge badgeContent={unread} color="warning">
-              <NotificationsOutlinedIcon fontSize="medium" />
+              <NotificationsOutlinedIcon fontSize="medium" sx={{ color: '#000' }} />
             </Badge>
           </IconButton>
           <Popover

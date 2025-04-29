@@ -31,23 +31,23 @@ const options = {
   responsive: true,
   plugins: {
     legend: { display: false },
-    title: { display: true, text: 'Budget Forecast', color: '#FF6B6B', font: { size: 18, weight: 'bold' } },
+    title: { display: true, text: 'Budget Forecast', color: '#000', font: { size: 18, weight: 'bold' } },
     tooltip: {
-      backgroundColor: 'rgba(255,107,107,0.9)',
-      titleColor: '#FFD93D',
+      backgroundColor: 'rgba(0,0,0,0.9)',
+      titleColor: '#888',
       bodyColor: '#fff',
-      borderColor: '#FFD93D',
+      borderColor: '#888',
       borderWidth: 1,
     },
   },
   scales: {
     x: {
-      grid: { color: 'rgba(255,107,107,0.07)' },
-      ticks: { color: '#FF6B6B', font: { weight: 'bold' } },
+      grid: { color: 'rgba(0,0,0,0.07)' },
+      ticks: { color: '#000', font: { weight: 'bold' } },
     },
     y: {
-      grid: { color: 'rgba(255,107,107,0.07)' },
-      ticks: { color: '#FF6B6B', font: { weight: 'bold' } },
+      grid: { color: 'rgba(0,0,0,0.07)' },
+      ticks: { color: '#000', font: { weight: 'bold' } },
     },
   },
   animation: {
@@ -73,10 +73,10 @@ export default function BudgetAlertsPage() {
           Budget Alerts & Forecast
         </Typography>
       </Box>
-      <Paper elevation={6} sx={{ p: 3, borderRadius: 5, background: 'rgba(255,255,255,0.92)', boxShadow: '0 8px 32px 0 #FF6B6B33', backdropFilter: 'blur(8px)', mb: 4 }}>
+      <Paper elevation={6} sx={{ p: 3, borderRadius: 5, background: 'rgba(255,255,255,0.92)', boxShadow: '0 8px 32px 0 #0002', backdropFilter: 'blur(8px)', mb: 4 }}>
         <Typography variant="h6" fontWeight={700} color="error.main" mb={2}>Budget Status</Typography>
-        <Typography variant="body1" fontWeight={600} mb={1}>Budget: <span style={{ color: '#00C9A7' }}>${budget}</span></Typography>
-        <Typography variant="body1" fontWeight={600} mb={2}>Spent: <span style={{ color: spent > budget ? '#FF6B6B' : '#00C9A7' }}>${spent}</span></Typography>
+        <Typography variant="body1" fontWeight={600} mb={1}>Budget: <span style={{ color: '#000' }}>${budget}</span></Typography>
+        <Typography variant="body1" fontWeight={600} mb={2}>Spent: <span style={{ color: spent > budget ? '#000' : '#888' }}>${spent}</span></Typography>
         {spent > budget ? (
           <Alert severity="error" sx={{ fontWeight: 700, fontSize: 16, mb: 2 }}>You are <b>over budget</b>! Please review your spending.</Alert>
         ) : (
