@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Button, TextField, Box, Alert, Stack, Typography, MenuItem } from '@mui/material';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useAuth } from '../../services/AuthContext';
+import { useUser } from '../../contexts/UserContext';
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Required'),
@@ -14,9 +14,8 @@ const validationSchema = Yup.object({
 });
 
 export default function RegisterForm() {
-  const { login } = useAuth();
+  const { error, setError, register } = useUser();
   const navigate = useNavigate();
-  const [error, setError] = React.useState('');
 
   return (
     <Formik
@@ -24,16 +23,18 @@ export default function RegisterForm() {
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setError('');
-        // Fake API call
-        setTimeout(() => {
-          if (values.email === 'user@example.com') {
-            setError('Email already registered');
+        try {
+          await register(values.name, values.email, values.password, values.role);
+          if (values.role === 'individual') {
+            navigate('/home');
           } else {
-            login({ email: values.email, name: values.name, role: values.role });
-            navigate('/');
+            navigate('/home/register-organization');
           }
+        } catch (error) {
+          setError(error.message);
+        } finally {
           setSubmitting(false);
-        }, 800);
+        }
       }}
     >
       {({ values, handleChange, handleBlur, touched, errors, isSubmitting }) => (
@@ -44,7 +45,10 @@ export default function RegisterForm() {
               label="Name"
               name="name"
               value={values.name}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setError(null);
+              }}
               onBlur={handleBlur}
               error={touched.name && Boolean(errors.name)}
               helperText={touched.name && errors.name}
@@ -54,7 +58,10 @@ export default function RegisterForm() {
               label="Email"
               name="email"
               value={values.email}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setError(null);
+              }}
               onBlur={handleBlur}
               error={touched.email && Boolean(errors.email)}
               helperText={touched.email && errors.email}
@@ -65,7 +72,10 @@ export default function RegisterForm() {
               name="password"
               type="password"
               value={values.password}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setError(null);
+              }}
               onBlur={handleBlur}
               error={touched.password && Boolean(errors.password)}
               helperText={touched.password && errors.password}
@@ -76,7 +86,10 @@ export default function RegisterForm() {
               name="confirmPassword"
               type="password"
               value={values.confirmPassword}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setError(null);
+              }}
               onBlur={handleBlur}
               error={touched.confirmPassword && Boolean(errors.confirmPassword)}
               helperText={touched.confirmPassword && errors.confirmPassword}
@@ -87,7 +100,10 @@ export default function RegisterForm() {
               label="Role"
               name="role"
               value={values.role}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setError(null);
+              }}
               onBlur={handleBlur}
               error={touched.role && Boolean(errors.role)}
               helperText={touched.role && errors.role}

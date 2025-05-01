@@ -12,20 +12,22 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useState } from 'react';
-import { useAuth } from '../../services/AuthContext';
+import { useUser } from '../../contexts/UserContext';
 
 const drawerWidth = 220;
 
 const navItems = [
-  { text: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="medium" />, path: '/' },
-  { text: 'Expenses', icon: <ReceiptLongOutlinedIcon fontSize="medium" />, path: '/expenses' },
-  { text: 'Clustering', icon: <GroupWorkOutlinedIcon fontSize="medium" />, path: '/clustering' },
-  { text: 'Forecast', icon: <TimelineOutlinedIcon fontSize="medium" />, path: '/forecast' },
-  { text: 'Insights', icon: <InsightsOutlinedIcon fontSize="medium" />, path: '/insights' },
-  { text: 'Budget Alerts', icon: <WarningAmberOutlinedIcon fontSize="medium" />, path: '/budget-alerts' },
-  { text: 'Savings Goals', icon: <FlagOutlinedIcon fontSize="medium" />, path: '/savings-goals' },
-  { text: 'Family Members', icon: <PeopleOutlinedIcon fontSize="medium" />, path: '/family-members' },
+  { text: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="medium" />, path: '/home' },
+  { text : 'Add Details', icon: <AddOutlinedIcon fontSize="medium" />, path: '/home/add-details' },
+  { text: 'Expenses', icon: <ReceiptLongOutlinedIcon fontSize="medium" />, path: '/home/expenses' },
+  { text: 'Clustering', icon: <GroupWorkOutlinedIcon fontSize="medium" />, path: '/home/clustering' },
+  { text: 'Forecast', icon: <TimelineOutlinedIcon fontSize="medium" />, path: '/home/forecast' },
+  { text: 'Insights', icon: <InsightsOutlinedIcon fontSize="medium" />, path: '/home/insights' },
+  { text: 'Budget Alerts', icon: <WarningAmberOutlinedIcon fontSize="medium" />, path: '/home/budget-alerts' },
+  { text: 'Savings Goals', icon: <FlagOutlinedIcon fontSize="medium" />, path: '/home/savings-goals' },
+  { text: 'Family Members', icon: <PeopleOutlinedIcon fontSize="medium" />, path: '/home/family-members' },
 ];
 
 const sampleAlerts = [
@@ -33,9 +35,11 @@ const sampleAlerts = [
   { id: 2, type: 'info', message: 'Forecast: Spending may increase next month.' },
 ];
 
+  //GET http://localhost:5173/src/contexts/userContext.js?t=1746091401617 net::ERR_ABORTED 404 (Not Found)
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { logout } = useAuth();
+
+  const { user, logout } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -47,7 +51,7 @@ export default function Layout() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const handleNotifClick = (event) => {
@@ -66,7 +70,7 @@ export default function Layout() {
       <Toolbar sx={{ justifyContent: 'center', alignItems: 'center', minHeight: 80, px: 2 }}>
         <Avatar sx={{ bgcolor: 'primary.main', color: '#fff', width: 40, height: 40, fontSize: 24, mr: 1 }}>💸</Avatar>
         <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 700, letterSpacing: 0.5, ml: 1, color: 'primary.main', fontSize: '1.25rem' }}>
-          MoneyMontor
+          { 'MoneyMentor'}
         </Typography>
       </Toolbar>
       <Divider sx={{ bgcolor: '#E0E0E0' }} />

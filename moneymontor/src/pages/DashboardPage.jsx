@@ -11,7 +11,7 @@ import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
 import GroupIcon from '@mui/icons-material/Group';
 import AddIcon from '@mui/icons-material/Add';
-
+import { useUser } from '../contexts/UserContext';
 // Mock data for recent transactions
 const recentTransactions = [
   { id: 1, name: 'Grocery Store', category: 'Food', amount: -86.42, date: 'Today' },
@@ -29,7 +29,8 @@ const savingsGoals = [
 export default function DashboardPage() {
   const [timeFilter, setTimeFilter] = useState('month');
   const navigate = useNavigate();
-
+  const { user } = useUser();
+  console.log(user,'on dashboard page');
   const handleAddGoal = () => {
     navigate('/savings-goals');
   };
@@ -110,14 +111,14 @@ export default function DashboardPage() {
                       Monthly Income
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                      $3,450.00
+                     {user?.income}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                    {/* <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowUpwardOutlinedIcon sx={{ color: 'success.main', fontSize: 16, mr: 0.5 }} />
                       <Typography variant="caption" color="success.main" fontWeight={600}>
                         +12.5% from last month
                       </Typography>
-                    </Box>
+                    </Box> */}
                   </CardContent>
                 </Card>
               </Grid>
@@ -126,15 +127,15 @@ export default function DashboardPage() {
                 <Card elevation={0} sx={{ bgcolor: '#f7f9fc', border: '1px solid #eef2f6', borderRadius: 2 }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                      Monthly Expenses
+                     Expenses This Month
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                      $1,840.50
+                      {user?.totalThisMonth}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowDownwardOutlinedIcon sx={{ color: 'error.main', fontSize: 16, mr: 0.5 }} />
                       <Typography variant="caption" color="error.main" fontWeight={600}>
-                        -3.2% from last month
+                        {user?.percentageChange}% from last month
                       </Typography>
                     </Box>
                   </CardContent>
@@ -148,21 +149,21 @@ export default function DashboardPage() {
                       Balance
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                      $1,609.50
+                      {user?.income - user?.totalExpense}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                    {/* <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowUpwardOutlinedIcon sx={{ color: 'success.main', fontSize: 16, mr: 0.5 }} />
                       <Typography variant="caption" color="success.main" fontWeight={600}>
                         +8.5% from last month
                       </Typography>
-                    </Box>
+                    </Box> */}
                   </CardContent>
                 </Card>
               </Grid>
             </Grid>
             
             <Box sx={{ mt: 4, mb: 2 }}>
-              <TrendsChart />
+              <TrendsChart last7Months={user?.last7Months} />
             </Box>
           </Paper>
           

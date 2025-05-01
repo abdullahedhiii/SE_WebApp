@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Button, TextField, Box, Alert, Stack, Typography } from '@mui/material';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useAuth } from '../../services/AuthContext';
+import { useUser } from '../../contexts/UserContext';
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -11,9 +11,8 @@ const validationSchema = Yup.object({
 });
 
 export default function LoginForm() {
-  const { login } = useAuth();
   const navigate = useNavigate();
-  const [error, setError] = React.useState('');
+  const { error, setError, login } = useUser();
 
   return (
     <Formik
@@ -21,16 +20,12 @@ export default function LoginForm() {
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         setError('');
-        // Fake API call
-        setTimeout(() => {
-          if (values.email === 'user@example.com' && values.password === 'password') {
-            login({ email: values.email, role: 'individual' });
-            navigate('/');
-          } else {
-            setError('Invalid credentials');
-          }
-          setSubmitting(false);
-        }, 800);
+        try {
+          await login(values.email, values.password);
+          navigate('/home');
+        } catch (error) {
+          setError(error.message);
+        }
       }}
     >
       {({ values, handleChange, handleBlur, touched, errors, isSubmitting }) => (
@@ -41,7 +36,10 @@ export default function LoginForm() {
               label="Email"
               name="email"
               value={values.email}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setError(null);
+              }}
               onBlur={handleBlur}
               error={touched.email && Boolean(errors.email)}
               helperText={touched.email && errors.email}
@@ -53,7 +51,10 @@ export default function LoginForm() {
               name="password"
               type="password"
               value={values.password}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setError(null);
+              }}
               onBlur={handleBlur}
               error={touched.password && Boolean(errors.password)}
               helperText={touched.password && errors.password}

@@ -13,17 +13,22 @@ import BudgetAlertsPage from './pages/BudgetAlertsPage';
 import SavingsGoalsPage from './pages/SavingsGoalsPage';
 import FamilyMembersPage from './pages/FamilyMembersPage';
 import NotFoundPage from './pages/NotFoundPage';
-import { AuthProvider } from './services/AuthContext';
+import RegisterOrganisation from './components/auth/RegisterOrganisation';
+import AddDetails from './pages/AddDetails';
+import { UserProvider } from './contexts/UserContext';
 
 function App() {
+ 
+  
   return (
-    <AuthProvider>
+    <UserProvider>
       <CssBaseline />
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<Layout />}>
+        <Route path="/home/" element={<Layout />}>
           <Route index element={<DashboardPage />} />
+          <Route path="add-details" element={<AddDetails />} />
           <Route path="expenses" element={<ExpensesPage />} />
           <Route path="clustering" element={<ClusteringPage />} />
           <Route path="forecast" element={<ForecastPage />} />
@@ -31,10 +36,11 @@ function App() {
           <Route path="budget-alerts" element={<BudgetAlertsPage />} />
           <Route path="savings-goals" element={<SavingsGoalsPage />} />
           <Route path="family-members" element={<FamilyMembersPage />} />
+          <Route path="register-organization" element={<RegisterOrganisation />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </AuthProvider>
+    </UserProvider>
   );
 }
 
