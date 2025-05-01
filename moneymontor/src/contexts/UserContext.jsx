@@ -5,6 +5,18 @@ const UserContext = createContext();
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
+    const [details, setDetails] = useState(null);
+    
+    const fetchUserDetails = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/fetch-user-details/${user._id}`,
+            {withCredentials: true});
+            setDetails(response.data.userDetails);
+        } catch (error) {
+            setError(error.response.data.message);  
+        }
+    };
+
 
     const login = async (email, password) => {
         try {
@@ -13,7 +25,7 @@ export function UserProvider({ children }) {
                  {withCredentials: true}
                 );
             setUser(response.data.user);
-            console.log(response.data.user,'on login');
+            fetchUserDetails();
         } catch (error) {
             setError(error.response.data.message);
         }
@@ -45,7 +57,7 @@ export function UserProvider({ children }) {
     };
 
     return <UserContext.Provider 
-         value={{ user, setUser, login, register, logout, error, setError }}>
+         value={{ user, setUser, login, register, logout, error, setError, details, setDetails, fetchUserDetails }}>
         {children}
     </UserContext.Provider>;
 };

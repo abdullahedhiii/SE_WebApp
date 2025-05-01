@@ -5,6 +5,7 @@ const Organization = require('../database/models/Organization');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Expense = require('../database/models/Expense');
+const Goal = require('../database/models/Goals');
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -18,16 +19,44 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-        const expense = await Expense.find({ $or: [{ organization: user.organisation }, { user: user._id }] });
-        //get total expense amount
-        const totalExpense = expense?.reduce((acc, curr) => acc + curr.amount, 0) || 0;
-        const totalThisMonth = expense?.filter(expense => {
+        
+       
+        
+        const userData = {
+                ...user._doc,
+            // uniqueCategories: uniqueCategories,
+            // allExpenses: expense,
+            // totalExpense,
+            // totalThisMonth,
+            // totalLastMonth,
+            // percentageChange: percentageChange || 0,
+            // last7Months: last7Months
+        }
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        console.log('userData', userData);
+        res.status(200).json({ user: userData });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.get('/fetch-user-details/:userId', async (req, res) => {
+    try{
+        const user = await User.findById(req.params.userId);
+        const expense = await Expense.find({ 
+            $or: [{ organization: user.organisation }, { user: user._id }] 
+        }).sort({ date: -1 });
+        const uniqueExpenses = Array.from(new Map(expense.map(exp => [exp._id.toString(), exp])).values());
+
+        const uniqueCategories = [...new Set(uniqueExpenses?.map(expense => expense.category))];
+        const totalExpense = uniqueExpenses?.reduce((acc, curr) => acc + curr.amount, 0) || 0;
+        const totalThisMonth = uniqueExpenses?.filter(expense => {
             const expenseDate = new Date(expense.date);
             return expenseDate.getMonth() === new Date().getMonth() &&
                    expenseDate.getFullYear() === new Date().getFullYear();
         }).reduce((acc, curr) => acc + curr.amount, 0) || 0;
         //get total expense amount for last month       
-        const totalLastMonth = expense?.filter(expense => {
+        const totalLastMonth = uniqueExpenses?.filter(expense => {
             const expenseDate = new Date(expense.date);
             return expenseDate.getMonth() === new Date().getMonth() - 1 &&
                    expenseDate.getFullYear() === new Date().getFullYear();
@@ -48,7 +77,7 @@ router.post('/login', async (req, res) => {
           const year = date.getFullYear();
           const monthIndex = date.getMonth();
         
-          const totalExpense = expense?.filter(exp => {
+          const totalExpense = uniqueExpenses?.filter(exp => {
             const expenseDate = new Date(exp.date);
             return (
               expenseDate.getMonth() === monthIndex &&
@@ -59,20 +88,26 @@ router.post('/login', async (req, res) => {
           last7Months.unshift({ month: month, amount: totalExpense }); // unshift to keep chronological order
         }
         
-        console.log('last7Months', last7Months);
-        
+       const goals = await Goal.find({ user: user._id });
+       const formattedGoals = goals.map(goal => ({
+        ...goal._doc,
+        progress: (goal.amount_saved / goal.amount) * 100
+       }));
+       const goalCategories = [...new Set(formattedGoals?.map(goal => goal.category))];
         const userData = {
-                ...user._doc,
-            totalExpense,
+            uniqueCategories: uniqueCategories,
+            allExpenses: uniqueExpenses,
+            totalExpense,   
             totalThisMonth,
             totalLastMonth,
             percentageChange: percentageChange || 0,
-            last7Months: last7Months
+            last7Months: last7Months,
+            goals: formattedGoals,
+            goalCategories: goalCategories
         }
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-        console.log('userData', userData);
-        res.status(200).json({ user: userData });
-    } catch (error) {
+        res.status(200).json({userDetails   : userData});
+    }
+    catch(error){
         res.status(500).json({ message: error.message });
     }
 });
@@ -151,5 +186,37 @@ router.post('/add-details/:userId', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+});
+
+router.post('/add-expense/:userId', async (req, res) => {
+    const { amount, description, date, category } = req.body;
+    console.log('add expense', req.body);
+    try {
+       // const user = await User.findById(req.params.userId);
+        const expense = new Expense({ amount, description, date, category, user: req.params.userId });
+        expense.save();
+        console.log('expense added', expense);
+        res.status(200).json({expense});
+    } catch (error) {
+        console.log('add expense error', error);
+        res.status(500).json({ message: error.message });
+    }
+});     
+
+router.post('/add-goal/:userId', async (req, res) => {
+
+    console.log('add goal', req.body);
+    const { title, description, category, amount,current, color, startDate, endDate } = req.body;
+    try {
+        const goal = new Goal({ title, description, category, amount, 
+            amount_saved: current, color, startDate, endDate, user: req.params.userId });
+        goal.save();
+        console.log('goal added', goal);
+        res.status(200).json({goal});
+}
+catch(error){
+    console.log('add goal error', error);
+    res.status(500).json({ message: error.message });
+}
 });
 module.exports = router;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Paper, Box, Avatar, Card, CardContent, Chip, Divider, LinearProgress, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import OverviewCards from '../components/dashboard/OverviewCards';
@@ -12,13 +12,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import GroupIcon from '@mui/icons-material/Group';
 import AddIcon from '@mui/icons-material/Add';
 import { useUser } from '../contexts/UserContext';
-// Mock data for recent transactions
-const recentTransactions = [
-  { id: 1, name: 'Grocery Store', category: 'Food', amount: -86.42, date: 'Today' },
-  { id: 2, name: 'Salary Deposit', category: 'Income', amount: 3200.00, date: 'Yesterday' },
-  { id: 3, name: 'Electric Bill', category: 'Utilities', amount: -94.20, date: 'Oct 15' },
-  { id: 4, name: 'Restaurant', category: 'Food', amount: -32.50, date: 'Oct 12' },
-];
+import { FormatDate } from '../../utils/FormatDate';
 
 // Mock data for savings goals
 const savingsGoals = [
@@ -29,11 +23,16 @@ const savingsGoals = [
 export default function DashboardPage() {
   const [timeFilter, setTimeFilter] = useState('month');
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, details, fetchUserDetails } = useUser();
   console.log(user,'on dashboard page');
+  
   const handleAddGoal = () => {
-    navigate('/savings-goals');
+    navigate('/home/savings-goals');
   };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
 
   const handleManageFamily = () => {
     navigate('/family-members');
@@ -111,7 +110,7 @@ export default function DashboardPage() {
                       Monthly Income
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                     {user?.income}
+                     Rs.{user?.income}
                     </Typography>
                     {/* <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowUpwardOutlinedIcon sx={{ color: 'success.main', fontSize: 16, mr: 0.5 }} />
@@ -130,12 +129,12 @@ export default function DashboardPage() {
                      Expenses This Month
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                      {user?.totalThisMonth}
+                      Rs.{details?.totalThisMonth}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowDownwardOutlinedIcon sx={{ color: 'error.main', fontSize: 16, mr: 0.5 }} />
                       <Typography variant="caption" color="error.main" fontWeight={600}>
-                        {user?.percentageChange}% from last month
+                        {details?.percentageChange}% from last month
                       </Typography>
                     </Box>
                   </CardContent>
@@ -149,7 +148,7 @@ export default function DashboardPage() {
                       Balance
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                      {user?.income - user?.totalExpense}
+                      Rs.{user?.income - details?.totalExpense}
                     </Typography>
                     {/* <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowUpwardOutlinedIcon sx={{ color: 'success.main', fontSize: 16, mr: 0.5 }} />
@@ -163,7 +162,7 @@ export default function DashboardPage() {
             </Grid>
             
             <Box sx={{ mt: 4, mb: 2 }}>
-              <TrendsChart last7Months={user?.last7Months} />
+              <TrendsChart last7Months={details?.last7Months} />
             </Box>
           </Paper>
           
@@ -182,7 +181,7 @@ export default function DashboardPage() {
               </Button>
             </Box>
             
-            {recentTransactions.map((transaction, index) => (
+            {details?.allExpenses?.slice(0, 5).map((transaction, index) => (
               <React.Fragment key={transaction.id}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -209,7 +208,7 @@ export default function DashboardPage() {
                         {transaction.name}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {transaction.category} • {transaction.date}
+                        {transaction.category} • {FormatDate(transaction.date)}
                       </Typography>
                     </Box>
                   </Box>
@@ -221,7 +220,7 @@ export default function DashboardPage() {
                     {transaction.amount > 0 ? '+' : ''}{transaction.amount.toFixed(2)}
                   </Typography>
                 </Box>
-                {index < recentTransactions.length - 1 && <Divider sx={{ my: 0.5 }} />}
+                {index < details?.allExpenses?.length - 1 && <Divider sx={{ my: 0.5 }} />}
               </React.Fragment>
             ))}
           </Paper>
@@ -269,19 +268,19 @@ export default function DashboardPage() {
               </Button>
             </Box>
             
-            {savingsGoals.map((goal) => (
+            {details?.goals?.map((goal) => (
               <Box key={goal.id} sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography variant="body2" fontWeight={600} color="text.primary">
-                    {goal.name}
+                    {goal.title}
                   </Typography>
                   <Typography variant="body2" fontWeight={600} color="text.secondary">
-                    ${goal.current} of ${goal.target}
+                    Rs.{goal.amount_saved} of Rs.{goal.amount}
                   </Typography>
                 </Box>
                 <LinearProgress 
                   variant="determinate" 
-                  value={(goal.current / goal.target) * 100} 
+                  value={goal.progress} 
                   sx={{ 
                     height: 8, 
                     borderRadius: 4, 
@@ -292,12 +291,12 @@ export default function DashboardPage() {
                   }} 
                 />
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                  {Math.round((goal.current / goal.target) * 100)}% completed
+                  {goal.progress}% completed
                 </Typography>
               </Box>
             ))}
             
-            <Button 
+            {/* <Button 
               variant="outlined" 
               color="primary" 
               fullWidth 
@@ -305,7 +304,7 @@ export default function DashboardPage() {
               sx={{ mt: 2, fontWeight: 600, borderRadius: 2 }}
             >
               Manage All Goals
-            </Button>
+            </Button> */}
           </Paper>
           
           <Paper elevation={0} sx={{ 
@@ -321,7 +320,7 @@ export default function DashboardPage() {
                   Family Access
                 </Typography>
               </Box>
-              <Button 
+              {/* <Button 
                 variant="outlined" 
                 color="primary" 
                 size="small"
@@ -329,7 +328,7 @@ export default function DashboardPage() {
                 sx={{ fontWeight: 600, borderRadius: 2 }}
               >
                 Manage
-              </Button>
+              </Button> */}
             </Box>
             
             <Typography variant="body2" color="text.secondary" paragraph>

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const expenseSchema = new mongoose.Schema({
     amount: { type: Number, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: false },
     date: { type: Date, required: true },
     category:{type: String, required: true},
     organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: false },//for organization expenses

@@ -3,38 +3,36 @@ import { Grid, Card, CardContent, Typography, Box, Avatar } from '@mui/material'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import CategoryIcon from '@mui/icons-material/Category';
 import PieChartIcon from '@mui/icons-material/PieChart';
+import { useUser } from '../../contexts/UserContext';
 
-const mockData = {
-  total: 1240.5,
-  categories: 5,
-  budget: 2000,
-};
+
+export default function OverviewCards() {
+   const {details, user} = useUser();
 
 const cards = [
   {
     title: 'Total Expenses',
-    value: `$${mockData.total.toLocaleString()}`,
+    value: `Rs.${details?.totalExpense}`,
     icon: <AttachMoneyIcon fontSize="large" />,
     color: 'linear-gradient(135deg, #6C63FF 0%, #5A52CC 100%)',
     lightColor: 'rgba(108, 99, 255, 0.12)',
   },
   {
     title: 'Categories',
-    value: mockData.categories,
+    value: details?.uniqueCategories?.length || 0,
     icon: <CategoryIcon fontSize="large" />,
     color: 'linear-gradient(135deg, #00C9A7 0%, #00A589 100%)',
     lightColor: 'rgba(0, 201, 167, 0.12)',
   },
   {
     title: 'Budget',
-    value: `$${mockData.budget.toLocaleString()}`,
+    value: `Rs.${user?.budget}`,
     icon: <PieChartIcon fontSize="large" />,
     color: 'linear-gradient(135deg, #FFD93D 0%, #EFCA32 100%)',
     lightColor: 'rgba(255, 217, 61, 0.12)',
   },
 ];
 
-export default function OverviewCards() {
   return (
     <Grid container spacing={3}>
       {cards.map((card) => (
