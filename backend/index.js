@@ -4,7 +4,7 @@ const cors = require('cors');
 const userRoutes = require('./APIs/user.routes');
 require('dotenv').config();
 const   connectDB = require('./database/db');
-
+const MLRoutes = require('./APIs/ML.routes');
 
 
 app.use(cors({
@@ -17,10 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', userRoutes);
-
-app.get('/', (req, res) => {
-    res.send('Hello World');
-});
+app.use('/api', MLRoutes);
 
 app.listen(process.env.PORT, () => {
 

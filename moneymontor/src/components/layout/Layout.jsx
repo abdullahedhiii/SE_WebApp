@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Box, CssBaseline, Divider, Avatar, Badge, Popover } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Box, CssBaseline, Divider, Avatar, Badge, Popover, Collapse } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
@@ -13,22 +13,14 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
 import { useUser } from '../../contexts/UserContext';
 
 const drawerWidth = 220;
 
-const navItems = [
-  { text: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="medium" />, path: '/home' },
-  { text : 'Add Details', icon: <AddOutlinedIcon fontSize="medium" />, path: '/home/add-details' },
-  { text: 'Expenses', icon: <ReceiptLongOutlinedIcon fontSize="medium" />, path: '/home/expenses' },
-  { text: 'Clustering', icon: <GroupWorkOutlinedIcon fontSize="medium" />, path: '/home/clustering' },
-  { text: 'Forecast', icon: <TimelineOutlinedIcon fontSize="medium" />, path: '/home/forecast' },
-  { text: 'Insights', icon: <InsightsOutlinedIcon fontSize="medium" />, path: '/home/insights' },
-  { text: 'Budget Alerts', icon: <WarningAmberOutlinedIcon fontSize="medium" />, path: '/home/budget-alerts' },
-  { text: 'Savings Goals', icon: <FlagOutlinedIcon fontSize="medium" />, path: '/home/savings-goals' },
-  { text: 'Family Members', icon: <PeopleOutlinedIcon fontSize="medium" />, path: '/home/family-members' },
-];
 
 const sampleAlerts = [
   { id: 1, type: 'error', message: 'You are over budget! Please review your spending.' },
@@ -38,6 +30,7 @@ const sampleAlerts = [
   //GET http://localhost:5173/src/contexts/userContext.js?t=1746091401617 net::ERR_ABORTED 404 (Not Found)
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [aiMenuOpen, setAiMenuOpen] = useState(false);
 
   const { user, logout } = useUser();
   const navigate = useNavigate();
@@ -45,12 +38,65 @@ export default function Layout() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [unread, setUnread] = useState(sampleAlerts.length);
 
+  const handleAiMenuToggle = () => {
+    setAiMenuOpen(!aiMenuOpen);
+  };
+
+  const isAiFeatureActive = ['/home/clustering', '/home/forecast', '/home/insights'].includes(location.pathname);
+
+  const baseItems = [
+    { text: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="medium" />, path: '/home' },
+  ];
+  
+  const conditionalItems = [];
+  
+  if (user && (user.user_type === 'Organization' || user.organisation_role === 'contributor')) {
+    conditionalItems.push({
+      text: 'Expenses',
+      icon: <ReceiptLongOutlinedIcon fontSize="medium" />,
+      path: '/home/expenses',
+    });
+  }
+  
+  // AI features are now grouped
+  const aiFeatures = [
+    { text: 'Clustering', icon: <GroupWorkOutlinedIcon fontSize="medium" />, path: '/home/clustering' },
+    { text: 'Forecast', icon: <TimelineOutlinedIcon fontSize="medium" />, path: '/home/forecast' },
+    // { text: 'Insights', icon: <InsightsOutlinedIcon fontSize="medium" />, path: '/home/insights' },
+  ];
+  
+
+  
+  if (user?.user_type === 'organization') {
+    conditionalItems.push({
+      text: 'Add Details',
+      icon: <AddOutlinedIcon fontSize="medium" />,
+      path: '/home/add-details',
+    });
+    conditionalItems.push({
+      text: 'Savings Goals',
+      icon: <FlagOutlinedIcon fontSize="medium" />,
+      path: '/home/savings-goals',
+    });
+  }
+  
+  if (user && (user.user_type === 'organization' || user.organisation)) {
+    conditionalItems.push({
+      text: 'Organisation Members',
+      icon: <PeopleOutlinedIcon fontSize="medium" />,
+      path: '/home/organisation-members',
+    });
+  }
+  
+  // Final nav items array
+  const navItems = [...baseItems, ...conditionalItems];
+  
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -103,6 +149,78 @@ export default function Layout() {
             <ListItemText primary={item.text} primaryTypographyProps={{ fontSize: '1rem', fontWeight: location.pathname === item.path ? 700 : 500 }} />
           </ListItem>
         ))}
+
+        {/* AI Features Dropdown */}
+        <ListItem 
+          button 
+          onClick={handleAiMenuToggle}
+          sx={{
+            my: 0.5,
+            borderRadius: 2,
+            bgcolor: isAiFeatureActive ? 'primary.main' : 'transparent',
+            color: isAiFeatureActive ? '#fff' : 'primary.main',
+            fontWeight: isAiFeatureActive ? 700 : 500,
+            fontSize: '1rem',
+            px: 2,
+            minHeight: 48,
+            transition: 'all 0.18s',
+            '&:hover': {
+              bgcolor: isAiFeatureActive ? 'primary.main' : '#F5F5F5',
+              color: isAiFeatureActive ? '#fff' : 'primary.main',
+              transform: 'scale(1.03)',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ color: 'inherit', minWidth: 36 }}>
+            <SmartToyOutlinedIcon fontSize="medium" />
+          </ListItemIcon>
+          <ListItemText 
+            primary="AI Features" 
+            primaryTypographyProps={{ fontSize: '1rem', fontWeight: isAiFeatureActive ? 700 : 500 }} 
+          />
+          {aiMenuOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </ListItem>
+
+        <Collapse in={aiMenuOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {aiFeatures.map((item) => (
+              <ListItem
+                button
+                key={item.text}
+                component={Link}
+                to={item.path}
+                onClick={() => setMobileOpen(false)}
+                sx={{
+                  pl: 4,
+                  my: 0.5,
+                  borderRadius: 2,
+                  bgcolor: location.pathname === item.path ? 'primary.light' : 'transparent',
+                  color: location.pathname === item.path ? '#fff' : 'primary.main',
+                  fontWeight: location.pathname === item.path ? 700 : 500,
+                  fontSize: '0.95rem',
+                  px: 2,
+                  minHeight: 44,
+                  transition: 'all 0.18s',
+                  '&:hover': {
+                    bgcolor: location.pathname === item.path ? 'primary.light' : '#F5F5F5',
+                    color: location.pathname === item.path ? '#fff' : 'primary.main',
+                    transform: 'scale(1.02)',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: 'inherit', minWidth: 36 }}>{item.icon}</ListItemIcon>
+                <ListItemText 
+                  primary={item.text} 
+                  primaryTypographyProps={{ 
+                    fontSize: '0.95rem', 
+                    fontWeight: location.pathname === item.path ? 700 : 500 
+                  }} 
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
+
         <ListItem button onClick={handleLogout} sx={{ mt: 2, borderRadius: 2, color: 'primary.main', px: 2, minHeight: 48, '&:hover': { bgcolor: '#F5F5F5', color: 'primary.main' } }}>
           <ListItemIcon sx={{ color: 'inherit', minWidth: 36 }}><LogoutOutlinedIcon fontSize="medium" /></ListItemIcon>
           <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '1rem', fontWeight: 500 }} />

@@ -26,51 +26,17 @@ import FlagIcon from '@mui/icons-material/Flag';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AddGoalForm from '../components/savings/AddGoalForm';
+import { useUser } from '../contexts/UserContext';
 
-// Initial mock data for savings goals
-const initialGoals = [
-  { 
-    id: 1, 
-    name: 'Vacation', 
-    category: 'vacation',
-    target: 2000, 
-    current: 1200, 
-    color: 'primary.main',
-    deadline: '2023-12-31',
-    notes: 'Trip to Hawaii',
-    progress: 60
-  },
-  { 
-    id: 2, 
-    name: 'New Laptop', 
-    category: 'electronics',
-    target: 1500, 
-    current: 800, 
-    color: 'secondary.main',
-    deadline: '2023-10-15',
-    notes: 'MacBook Pro',
-    progress: 53
-  },
-  { 
-    id: 3, 
-    name: 'Emergency Fund', 
-    category: 'other',
-    target: 5000, 
-    current: 3500, 
-    color: '#00C9A7',
-    deadline: '',
-    notes: '3 months of expenses',
-    progress: 70
-  },
-];
 
 export default function SavingsGoalsPage() {
-  const [goals, setGoals] = useState(initialGoals);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [goalToDelete, setGoalToDelete] = useState(null);
   const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
 
+  const {user,details, fetchUserDetails} = useUser();
+  const [goals, setGoals] = useState(details?.goals || []);
   const handleAddGoal = (newGoal) => {
     setGoals(prev => [...prev, newGoal]);
     showNotification('Goal added successfully!', 'success');
@@ -198,17 +164,17 @@ export default function SavingsGoalsPage() {
                   Total Progress
                 </Typography>
                 <Typography variant="body2" fontWeight={600} color="primary.main">
-                  ${totalSaved.toLocaleString()} of ${totalTarget.toLocaleString()}
+                  Rs.{details?.goalData?.totalSaved} of Rs.{details?.goalData?.totalTarget}
                 </Typography>
               </Box>
               <LinearProgress 
                 variant="determinate" 
-                value={overallProgress} 
+                value={details?.goalData?.overallProgress} 
                 sx={{ height: 10, borderRadius: 5 }} 
               />
             </Box>
             <Typography variant="caption" color="text.secondary">
-              You're {overallProgress}% of the way toward your combined savings goals
+              You're {details?.goalData?.overallProgress}% of the way toward your combined savings goals
             </Typography>
           </Grid>
           
@@ -219,7 +185,7 @@ export default function SavingsGoalsPage() {
                   Total Saved
                 </Typography>
                 <Typography variant="h4" fontWeight={700} color="primary.main">
-                  ${totalSaved.toLocaleString()}
+                  Rs.{details?.goalData?.totalSaved}
                 </Typography>
               </Box>
               <Box>
@@ -227,7 +193,7 @@ export default function SavingsGoalsPage() {
                   Remaining
                 </Typography>
                 <Typography variant="h6" fontWeight={600} color="text.secondary">
-                  ${(totalTarget - totalSaved).toLocaleString()}
+                  Rs.{(details?.goalData?.totalTarget - details?.goalData?.totalSaved)}
                 </Typography>
               </Box>
             </Box>
@@ -267,7 +233,7 @@ export default function SavingsGoalsPage() {
               <CardContent sx={{ pt: 2, flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                   <Typography variant="h6" fontWeight={700} noWrap sx={{ maxWidth: '70%' }}>
-                    {goal.name}
+                    {goal.title}
                   </Typography>
                   
                   <Box>
@@ -294,10 +260,10 @@ export default function SavingsGoalsPage() {
                 <Box sx={{ mb: 3 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="body2" fontWeight={600} color="text.secondary">
-                      ${goal.current.toLocaleString()}
+                      ${goal.amount_saved}
                     </Typography>
                     <Typography variant="body2" fontWeight={600} color="text.secondary">
-                      ${goal.target.toLocaleString()}
+                      ${goal.amount}
                     </Typography>
                   </Box>
                   <LinearProgress 
@@ -317,11 +283,11 @@ export default function SavingsGoalsPage() {
                   </Typography>
                 </Box>
                 
-                {goal.deadline && (
+                {goal.endDate && (
                   <Box sx={{ display: 'flex', alignItems: 'center', mt: 'auto' }}>
                     <CalendarTodayIcon fontSize="small" sx={{ mr: 1, color: 'text.secondary', fontSize: 16 }} />
                     <Typography variant="caption" color="text.secondary">
-                      Deadline: {new Date(goal.deadline).toLocaleDateString('en-US', { 
+                      Deadline: {new Date(goal.endDate).toLocaleDateString('en-US', { 
                         year: 'numeric', 
                         month: 'short', 
                         day: 'numeric' 
@@ -330,7 +296,7 @@ export default function SavingsGoalsPage() {
                   </Box>
                 )}
                 
-                {goal.notes && (
+                {goal.description && (
                   <Typography 
                     variant="body2" 
                     color="text.secondary" 
@@ -341,7 +307,7 @@ export default function SavingsGoalsPage() {
                       opacity: 0.8 
                     }}
                   >
-                    {goal.notes}
+                    {goal.description}
                   </Typography>
                 )}
               </CardContent>

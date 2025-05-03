@@ -18,9 +18,12 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
+import CircularProgress from '@mui/material/CircularProgress';
+import axios from 'axios';
+import { useUser } from '../../contexts/UserContext';
+import Alert from '@mui/material/Alert';
 const roles = [
-  { value: 'admin', label: 'Administrator' },
+  // { value: 'admin', label: 'Administrator' },
   { value: 'contributor', label: 'Contributor' },
   { value: 'viewer', label: 'Viewer (Read-only)' },
 ];
@@ -35,6 +38,7 @@ const avatarColors = [
 ];
 
 export default function AddFamilyMemberForm({ open, onClose, onSave }) {
+  const {user,fetchUserDetails} = useUser();
   const [member, setMember] = useState({
     name: '',
     email: '',
@@ -45,16 +49,14 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
     notes: ''
   });
 
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMember(prev => ({ ...prev, [name]: value }));
+    setError(null);
     
-    // Clear error when field is edited
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
   };
 
   const handleSwitchChange = (e) => {
@@ -77,27 +79,44 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
   };
 
   const validate = () => {
-    const newErrors = {};
-    if (!member.name.trim()) newErrors.name = 'Name is required';
-    if (!member.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email)) {
-      newErrors.email = 'Please enter a valid email address';
+
+    // if (!member.name.trim()) newErrors.name = 'Name is required';
+    if (!member?.email?.trim()) {
+      setError('Email is required');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member?.email)) {
+      setError('Please enter a valid email address');
     }
     
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+      return 1
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validate()) {
+      setLoading(true);
+      try {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/add-user-to-organization/${user.organisation}`, {
+          email: member.email,
+          organisation_role: member.role,
+          avatarColor: member.avatarColor
+        });
+
+        await fetchUserDetails();
       onSave({
         ...member,
-        id: Date.now(), // Generate a temporary ID
+        id: Date.now(), 
+
         initials: getInitials(member.name),
       });
       onClose();
     }
+    catch(error){
+      console.log(error);
+      setError(error.response.data.message);
+    }
+    finally{
+      setLoading(false);
+    }
+  }    
   };
 
   return (
@@ -167,7 +186,7 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
           ))}
         </Box>
         
-        <TextField
+        {/* <TextField
           fullWidth
           label="Name"
           name="name"
@@ -177,7 +196,7 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
           helperText={errors.name}
           placeholder="Full Name"
           sx={{ mb: 2.5 }}
-        />
+        /> */}
         
         <TextField
           fullWidth
@@ -186,8 +205,8 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
           type="email"
           value={member.email}
           onChange={handleChange}
-          error={Boolean(errors.email)}
-          helperText={errors.email}
+          error={Boolean(error)}
+          helperText={error}
           placeholder="email@example.com"
           sx={{ mb: 2.5 }}
         />
@@ -208,11 +227,11 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
           ))}
         </TextField>
         
-        <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+        {/* <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
           Permissions
         </Typography>
-        
-        <FormControl component="fieldset" sx={{ width: '100%' }}>
+         */}
+        {/* <FormControl component="fieldset" sx={{ width: '100%' }}>
           <FormControlLabel
             control={
               <Switch 
@@ -236,9 +255,9 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
             }
             label="Allow Expense Tracking"
           />
-        </FormControl>
+        </FormControl> */}
         
-        <TextField
+        {/* <TextField
           fullWidth
           label="Notes (Optional)"
           name="notes"
@@ -248,7 +267,7 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
           rows={2}
           placeholder="Additional information about this member"
           sx={{ mt: 2 }}
-        />
+        /> */}
       </DialogContent>
       
       <DialogActions sx={{ px: 3, pb: 3 }}>
@@ -256,12 +275,15 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
           Cancel
         </Button>
         <Button 
+          disabled={loading}
           onClick={handleSubmit} 
           variant="contained" 
           startIcon={<PersonAddIcon />}
           sx={{ borderRadius: 2 }}
         >
-          Add Member
+          {loading ? <CircularProgress size={20} /> : 'Add Member'}
+          {/* {error && <Alert severity="error">{error}</Alert>} */}
+          {/* {success && <Alert severity="success">{success}</Alert>} */}
         </Button>
       </DialogActions>
     </Dialog>

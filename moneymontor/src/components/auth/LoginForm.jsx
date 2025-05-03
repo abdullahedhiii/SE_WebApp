@@ -12,7 +12,7 @@ const validationSchema = Yup.object({
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const { error, setError, login } = useUser();
+  const { error, setError, login,justLoggedOut } = useUser();
 
   return (
     <Formik
@@ -22,14 +22,17 @@ export default function LoginForm() {
         setError('');
         try {
           await login(values.email, values.password);
-          navigate('/home');
         } catch (error) {
           setError(error.message);
+        }
+        finally{
+          setSubmitting(false);
         }
       }}
     >
       {({ values, handleChange, handleBlur, touched, errors, isSubmitting }) => (
         <Form>
+          {justLoggedOut && <Alert severity="success">Logged out successfully</Alert>}
           <Stack spacing={2}>
             {error && <Alert severity="error">{error}</Alert>}
             <TextField

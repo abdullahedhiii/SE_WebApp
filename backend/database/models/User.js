@@ -5,9 +5,11 @@ const userSchema = new mongoose.Schema({
     name: String,
     email: String,
     password: String,
-    role: String,
+    user_type: String,
     budget: Number,
     income: Number,
+    avatarColor: {type: String, default: '#000000'},
+    organisation_role: {type: String, required: false,default: 'admin'},
     organisation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Organization',

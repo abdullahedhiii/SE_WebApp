@@ -16,7 +16,7 @@ const AddDetails = () => {
     const [success, setSuccess] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-console.log('user on add details',user);
+
     useEffect(() => {
         if (!user) {
             navigate('/');
@@ -46,11 +46,10 @@ console.log('user on add details',user);
                 info, 
                 { withCredentials: true }
             );
-
-            const updatedUser = { ...user, ...response.data.user };
-          
-            setUser(updatedUser);
-            console.log(updatedUser,'on add details');
+            // console.log('response on add details',response.data);
+            // const updatedUser = { ...user, ...response.data.user };
+            setUser(response.data.user);
+            // console.log(updatedUser,'on add details');
             setSuccess('Details added successfully');
             toast.success('Details added successfully');
             

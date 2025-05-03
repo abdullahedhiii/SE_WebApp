@@ -23,7 +23,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CategoryIcon from '@mui/icons-material/Category';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import descriptionIcon from '@mui/icons-material/description';
+import DescriptionIcon from '@mui/icons-material/description';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import { useUser } from '../../contexts/UserContext';
 import axios from 'axios';
@@ -132,7 +132,7 @@ export default function AddGoalForm({ open, onClose, onSave }) {
       setSubmitting(true);
       try {
         const response = await axios.post(
-          `Rs.{import.meta.env.VITE_API_URL}/api/add-goal/Rs.{user._id}`,
+          `${import.meta.env.VITE_API_URL}/api/add-goal/${user._id}`,
           goal,
           {withCredentials: true}
         );
@@ -425,7 +425,7 @@ export default function AddGoalForm({ open, onClose, onSave }) {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1.5 }}>
-                <descriptionIcon sx={{ color: '#757575' }} />
+                <DescriptionIcon sx={{ color: '#757575' }} />
               </InputAdornment>
             ),
           }}

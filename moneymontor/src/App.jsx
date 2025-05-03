@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import Layout from './components/layout/Layout';
@@ -15,13 +15,23 @@ import FamilyMembersPage from './pages/FamilyMembersPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RegisterOrganisation from './components/auth/RegisterOrganisation';
 import AddDetails from './pages/AddDetails';
-import { UserProvider } from './contexts/UserContext';
+import { useUser } from './contexts/UserContext';
+// import { useNavigate } from 'react-router-dom';
+
 
 function App() {
- 
+  const {user} = useUser();
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   console.log('app mounted');
+  //   if(!user){
+  //    window.location.href = '/';
+  //   }
+  // }, [user]);
   
   return (
-    <UserProvider>
+    <>
       <CssBaseline />
       <Routes>
         <Route path="/" element={<LoginPage />} />
@@ -35,12 +45,12 @@ function App() {
           <Route path="insights" element={<InsightsPage />} />
           <Route path="budget-alerts" element={<BudgetAlertsPage />} />
           <Route path="savings-goals" element={<SavingsGoalsPage />} />
-          <Route path="family-members" element={<FamilyMembersPage />} />
+          <Route path="organisation-members" element={<FamilyMembersPage />} />
           <Route path="register-organization" element={<RegisterOrganisation />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </UserProvider>
+    </>
   );
 }
 

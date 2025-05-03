@@ -37,46 +37,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoIcon from '@mui/icons-material/Info';
 import AddFamilyMemberForm from '../components/family/AddFamilyMemberForm';
+import { useUser } from '../contexts/UserContext';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
-// Initial mock data for family members
-const initialMembers = [
-  {
-    id: 1,
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    role: 'admin',
-    avatarColor: '#000',
-    initials: 'JD',
-    allowBudgetEditing: true,
-    allowExpenseTracking: true,
-    status: 'active',
-    notes: 'Account owner'
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    role: 'contributor',
-    avatarColor: '#888',
-    initials: 'JS',
-    allowBudgetEditing: true,
-    allowExpenseTracking: true,
-    status: 'active',
-    notes: ''
-  },
-  {
-    id: 3,
-    name: 'Mike Johnson',
-    email: 'mike.j@example.com',
-    role: 'viewer',
-    avatarColor: '#000',
-    initials: 'MJ',
-    allowBudgetEditing: false,
-    allowExpenseTracking: false,
-    status: 'pending',
-    notes: 'Limited access'
-  }
-];
 
 const getRoleLabel = (role) => {
   const roles = {
@@ -98,7 +61,7 @@ const getRoleColor = (role) => {
 
 const getRoleIcon = (role) => {
   switch (role) {
-    case 'admin':
+    case 'Organization Owner':
       return <SupervisorAccountIcon fontSize="small" />;
     case 'contributor':
       return <EditIcon fontSize="small" />;
@@ -110,7 +73,8 @@ const getRoleIcon = (role) => {
 };
 
 export default function FamilyMembersPage() {
-  const [members, setMembers] = useState(initialMembers);
+  const {details,user} = useUser();
+  const [members, setMembers] = useState(details?.org_members || []);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [memberToDelete, setMemberToDelete] = useState(null);
@@ -211,7 +175,7 @@ export default function FamilyMembersPage() {
           </Typography>
         </Box>
         
-        <Button 
+       {user.user_type === 'Organization' && <Button 
           variant="contained" 
           startIcon={<AddIcon />} 
           onClick={() => setIsAddModalOpen(true)}
@@ -224,7 +188,7 @@ export default function FamilyMembersPage() {
           }}
         >
           Add Member
-        </Button>
+        </Button>}
       </Box>
       
       {/* Members List */}
@@ -251,16 +215,22 @@ export default function FamilyMembersPage() {
               <ListItem
                 secondaryAction={
                   <Box>
-                    <Tooltip title="Edit">
-                      <IconButton edge="end" sx={{ mr: 1 }} onClick={() => handleEditMember(member.id)}>
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Remove">
-                      <IconButton edge="end" onClick={() => openDeleteConfirmation(member.id)}>
-                        <DeleteOutlineIcon color="error" />
-                      </IconButton>
-                    </Tooltip>
+                    {user.user_type === 'Organization' && member.organisation_role !== 'Organization Owner' && (
+                      <Tooltip title="Edit">
+                        <IconButton edge="end" sx={{ mr: 1 }} onClick={() => handleEditMember(member.id)}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+
+                    )}
+                    {user.user_type === 'Organization' && member.organisation_role !== 'Organization Owner' && (
+                      <Tooltip title="Remove">
+                        <IconButton edge="end" onClick={() => openDeleteConfirmation(member.id)}>
+                          <DeleteOutlineIcon color="error" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  
                   </Box>
                 }
                 sx={{ 
@@ -271,7 +241,7 @@ export default function FamilyMembersPage() {
               >
                 <ListItemAvatar>
                   <Avatar sx={{ bgcolor: member.avatarColor, fontWeight: 600 }}>
-                    {member.initials}
+                    {member.initials || member.name.charAt(0)}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
@@ -281,21 +251,21 @@ export default function FamilyMembersPage() {
                         {member.name}
                       </Typography>
                       <Chip 
-                        icon={getRoleIcon(member.role)}
-                        label={getRoleLabel(member.role)}
+                        icon={getRoleIcon(member.organisation_role)}
+                        label={getRoleLabel(member.organisation_role)}
                         size="small"
-                        color={getRoleColor(member.role)}
+                        color={getRoleColor(member.organisation_role)}
                         variant="outlined"
                         sx={{ fontWeight: 500, ml: 1 }}
                       />
-                      {member.status === 'pending' && (
+                      {/* {member.status === 'pending' && (
                         <Chip 
                           size="small"
                           label="Invitation Pending"
                           color="warning"
                           sx={{ fontWeight: 500 }}
                         />
-                      )}
+                      )} */}
                     </Box>
                   }
                   secondary={
@@ -307,7 +277,7 @@ export default function FamilyMembersPage() {
                         </Typography>
                       </Box>
                       
-                      <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                      {/* <Grid container spacing={2} sx={{ mt: 0.5 }}>
                         <Grid item xs={12} sm={6}>
                           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Typography variant="caption" color="text.secondary">
@@ -350,7 +320,7 @@ export default function FamilyMembersPage() {
                             </Box>
                           </Box>
                         </Grid>
-                      </Grid>
+                      </Grid> */}
                     </Box>
                   }
                 />
@@ -389,10 +359,10 @@ export default function FamilyMembersPage() {
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle2" fontWeight={600} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
             <SupervisorAccountIcon fontSize="small" sx={{ mr: 1, color: 'primary.main' }} />
-            Administrator
+            Organization Owner
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ ml: 4 }}>
-            Full access to all features, can manage members and settings
+            Full access to all features of the organization, can manage members,income, and budget
           </Typography>
         </Box>
         <Box sx={{ mb: 2 }}>
@@ -401,8 +371,8 @@ export default function FamilyMembersPage() {
             Contributor
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ ml: 4 }}>
-            Can add expenses and modify budgets if given permission
-          </Typography>
+            Can add and modify expenses
+                     </Typography>
         </Box>
         <Box>
           <Typography variant="subtitle2" fontWeight={600} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>

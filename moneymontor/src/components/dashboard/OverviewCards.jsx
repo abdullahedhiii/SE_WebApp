@@ -12,7 +12,7 @@ export default function OverviewCards() {
 const cards = [
   {
     title: 'Total Expenses',
-    value: `Rs.${details?.totalExpense}`,
+    value: details?.totalExpense ? `Rs.${details?.totalExpense}` : 'No Expenses Added',
     icon: <AttachMoneyIcon fontSize="large" />,
     color: 'linear-gradient(135deg, #6C63FF 0%, #5A52CC 100%)',
     lightColor: 'rgba(108, 99, 255, 0.12)',
@@ -26,7 +26,7 @@ const cards = [
   },
   {
     title: 'Budget',
-    value: `Rs.${user?.budget}`,
+    value: user?.budget ? `Rs.${user?.budget}` : 'No Budget Added',
     icon: <PieChartIcon fontSize="large" />,
     color: 'linear-gradient(135deg, #FFD93D 0%, #EFCA32 100%)',
     lightColor: 'rgba(255, 217, 61, 0.12)',

@@ -14,22 +14,17 @@ import AddIcon from '@mui/icons-material/Add';
 import { useUser } from '../contexts/UserContext';
 import { FormatDate } from '../../utils/FormatDate';
 
-// Mock data for savings goals
-const savingsGoals = [
-  { id: 1, name: 'Vacation', target: 2000, current: 1200, color: 'primary.main' },
-  { id: 2, name: 'New Laptop', target: 1500, current: 800, color: 'secondary.main' },
-];
+
 
 export default function DashboardPage() {
   const [timeFilter, setTimeFilter] = useState('month');
   const navigate = useNavigate();
   const { user, details, fetchUserDetails } = useUser();
-  console.log(user,'on dashboard page');
   
   const handleAddGoal = () => {
     navigate('/home/savings-goals');
   };
-
+console.log(details,'details on dashboard page');
   useEffect(() => {
     fetchUserDetails();
   }, []);
@@ -110,7 +105,7 @@ export default function DashboardPage() {
                       Monthly Income
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                     Rs.{user?.income}
+                    {user.income ?  `Rs.${user?.income}` :'No Income Added'}
                     </Typography>
                     {/* <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowUpwardOutlinedIcon sx={{ color: 'success.main', fontSize: 16, mr: 0.5 }} />
@@ -129,12 +124,12 @@ export default function DashboardPage() {
                      Expenses This Month
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                      Rs.{details?.totalThisMonth}
+                    {details.totalThisMonth ?  `Rs.${details?.totalThisMonth}` :'No Expenses Added'}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowDownwardOutlinedIcon sx={{ color: 'error.main', fontSize: 16, mr: 0.5 }} />
                       <Typography variant="caption" color="error.main" fontWeight={600}>
-                        {details?.percentageChange}% from last month
+                        {details.percentageChange ? `${details?.percentageChange}% from last month` : ''}
                       </Typography>
                     </Box>
                   </CardContent>
@@ -148,7 +143,7 @@ export default function DashboardPage() {
                       Balance
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                      Rs.{user?.income - details?.totalExpense}
+                    {user.income - details.totalExpense ?  `Rs.${user?.income - details?.totalExpense}` :'No Income Added'}
                     </Typography>
                     {/* <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                       <ArrowUpwardOutlinedIcon sx={{ color: 'success.main', fontSize: 16, mr: 0.5 }} />
@@ -208,7 +203,7 @@ export default function DashboardPage() {
                         {transaction.name}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {transaction.category} • {FormatDate(transaction.date)}
+                        {transaction.category} • {FormatDate(transaction.date)} • {transaction.user.name.includes(' ') ? transaction.user.name.split(' ')[0] : transaction.user.name}
                       </Typography>
                     </Box>
                   </Box>
@@ -256,7 +251,7 @@ export default function DashboardPage() {
               <Typography variant="h6" fontWeight={700} color="text.primary">
                 Savings Goals
               </Typography>
-              <Button 
+             {user.user_type === 'organization' && <Button 
                 variant="contained" 
                 color="primary" 
                 size="small" 
@@ -265,11 +260,24 @@ export default function DashboardPage() {
                 sx={{ fontWeight: 600, borderRadius: 2 }}
               >
                 Add Goal
-              </Button>
+              </Button>}
             </Box>
             
             {details?.goals?.map((goal) => (
-              <Box key={goal.id} sx={{ mb: 3 }}>
+            //    {
+            //     "_id": "68147f67903fda5ed15f3f7f",
+            //     "description": "I want to buy a new phone",
+            //     "category": "Electronics",
+            //     "amount": 1000,
+            //     "amount_saved": 250,
+            //     "startDate": "2025-05-02T00:00:00.000Z",
+            //     "endDate": "2025-06-20T00:00:00.000Z",
+            //     "color": "#d32f2f",
+            //     "user": "6813599f311b625cfd36871a",
+            //     "__v": 0,
+            //     "progress": 25
+            // }
+             <Box key={goal._id} sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography variant="body2" fontWeight={600} color="text.primary">
                     {goal.title}
@@ -296,15 +304,15 @@ export default function DashboardPage() {
               </Box>
             ))}
             
-            {/* <Button 
+            {user.user_type === 'organization' && <Button 
               variant="outlined" 
               color="primary" 
               fullWidth 
-              onClick={() => navigate('/savings-goals')}
+              onClick={() => navigate('/home/savings-goals')}
               sx={{ mt: 2, fontWeight: 600, borderRadius: 2 }}
             >
               Manage All Goals
-            </Button> */}
+            </Button>}
           </Paper>
           
           <Paper elevation={0} sx={{ 
@@ -313,38 +321,9 @@ export default function DashboardPage() {
             background: '#fff', 
             boxShadow: '0 2px 12px rgba(0,0,0,0.05)',
           }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <GroupIcon sx={{ color: 'primary.main', mr: 1 }} />
-                <Typography variant="h6" fontWeight={700} color="text.primary">
-                  Family Access
-                </Typography>
-              </Box>
-              {/* <Button 
-                variant="outlined" 
-                color="primary" 
-                size="small"
-                onClick={handleManageFamily}
-                sx={{ fontWeight: 600, borderRadius: 2 }}
-              >
-                Manage
-              </Button> */}
-            </Box>
             
-            <Typography variant="body2" color="text.secondary" paragraph>
-              Share financial information with your family members and control what they can see and edit.
-            </Typography>
             
-            <Button 
-              variant="contained" 
-              color="primary" 
-              fullWidth
-              startIcon={<GroupIcon />}
-              onClick={() => navigate('/family-members')}
-              sx={{ fontWeight: 600, borderRadius: 2 }}
-            >
-              Add Family Member
-            </Button>
+            
           </Paper>
         </Grid>
       </Grid>
