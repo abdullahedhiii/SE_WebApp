@@ -30,13 +30,13 @@ router.post('/login', async (req, res) => {
                 ...user._doc,
                 budget: admin_info.budget,
                 income: admin_info.income,
-            // uniqueCategories: uniqueCategories,
-            // allExpenses: expense,
-            // totalExpense,
-            // totalThisMonth,
-            // totalLastMonth,
-            // percentageChange: percentageChange || 0,
-            // last7Months: last7Months
+            
+            
+            
+            
+            
+            
+            
         
         }
     }
@@ -55,17 +55,15 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/fetch-user-details/:userId', async (req, res) => {
-    console.log('fetching user details', req.params.userId);
     try{
         const user = await User.findById(req.params.userId);
         if(!user){
-            console.log('user not found');
             return res.status(404).json({ message: 'User not found' });
         }
-        let user_info,users_organization;
+        let user_info = [],users_organization;
 
         if (user.user_type === 'organization' || user.organisation) {
-            console.log('user is in an organization');
+            console.log('checking org')
             users_organization = await Organization.findById(user.organisation);
             
             if (!users_organization) {
@@ -73,7 +71,6 @@ router.get('/fetch-user-details/:userId', async (req, res) => {
               return res.status(404).json({ message: 'Organization not found' });
             }
           
-            console.log('organization found', users_organization.users);
           
             if (users_organization.users.length > 0) {
               user_info = await Promise.all(
@@ -91,10 +88,11 @@ router.get('/fetch-user-details/:userId', async (req, res) => {
               user_info = null;
             }
           }
-          
-        let id_to_check = user.organisation ? users_organization.admin_id : user._id;
+        
+        let id_to_check = user.organisation !== null ? users_organization.admin_id : user._id;
         const admin_info = id_to_check? await User.findById(id_to_check) : null;
         if(admin_info){
+            console.log(admin_info)
             user_info.push({
                 name: admin_info.name,
                 email: admin_info.email,
@@ -102,8 +100,8 @@ router.get('/fetch-user-details/:userId', async (req, res) => {
                 organisation_role: 'Organization Owner'
             });
         }
-        //const expense = await Expense.find({ user: id_to_check }).sort({ date: -1 });
-        //find expenses of all the users of the organization
+        
+        
         let expense;
         if(users_organization){
             console.log('users_organization');
@@ -118,7 +116,7 @@ router.get('/fetch-user-details/:userId', async (req, res) => {
         else{
             expense = await Expense.find({ user: id_to_check }).sort({ date: -1 });
         }
-        const uniqueExpenses = Array.from(new Map(expense.map(exp => [exp._id.toString(), exp])).values());
+        const uniqueExpenses = Array.from(new Map(expense?.map(exp => [exp._id.toString(), exp])).values());
 
         const uniqueCategories = [...new Set(uniqueExpenses?.map(expense => expense.category))];
         const totalExpense = uniqueExpenses?.reduce((acc, curr) => acc + curr.amount, 0) || 0;
@@ -127,18 +125,18 @@ router.get('/fetch-user-details/:userId', async (req, res) => {
             return expenseDate.getMonth() === new Date().getMonth() &&
                    expenseDate.getFullYear() === new Date().getFullYear();
         }).reduce((acc, curr) => acc + curr.amount, 0) || 0;
-        //get total expense amount for last month       
+        
         const totalLastMonth = uniqueExpenses?.filter(expense => {
             const expenseDate = new Date(expense.date);
             return expenseDate.getMonth() === new Date().getMonth() - 1 &&
                    expenseDate.getFullYear() === new Date().getFullYear();
         }).reduce((acc, curr) => acc + curr.amount, 0) || 0;
-        
+        console.log('here')
 
         const percentageChange = ((totalThisMonth - totalLastMonth) / totalLastMonth) * 100;
         
-        //for last 7 months expense
-        //{month: 'Jan', amount: 0 },{month: 'Feb', amount: 0 },{month: 'Mar', amount: 0 },{month: 'Apr', amount: 0 },{month: 'May', amount: 0 },{month: 'Jun', amount: 0 },{month: 'Jul', amount: 0 }
+        
+        
         const last7Months = [];
 
         for (let i = 0; i < 7; i++) {
@@ -157,11 +155,11 @@ router.get('/fetch-user-details/:userId', async (req, res) => {
             );
           }).reduce((acc, curr) => acc + curr.amount, 0) || 0;
         
-          last7Months.unshift({ month: month, amount: totalExpense }); // unshift to keep chronological order
+          last7Months.unshift({ month: month, amount: totalExpense }); 
         }
         
        const goals = await Goal.find({ user: id_to_check });
-       const formattedGoals = goals.map(goal => ({
+       const formattedGoals = goals?.map(goal => ({
         ...goal._doc,
         progress: (goal.amount_saved / goal.amount) * 100
        }));
@@ -186,6 +184,7 @@ router.get('/fetch-user-details/:userId', async (req, res) => {
                 overallProgress
             }
         }
+        console.log('Returning user details ',userData)
         res.status(200).json({userDetails   : userData});
     }
     catch(error){
@@ -269,15 +268,15 @@ router.post('/add-user-to-organization/:organizationId', async (req, res) => {
   
       console.log('user found');
   
-      // ✅ Update the user fields and save
+      
       user.organisation = req.params.organizationId;
       user.organisation_role = organisation_role;
       user.avatarColor = avatarColor;
-      await user.save(); // <-- this is what persists the change
+      await user.save(); 
   
       console.log('user updated');
   
-      // ✅ Update the organization and save
+      
       organization.users.push(user._id);
       await organization.save();
   
@@ -305,7 +304,7 @@ router.post('/add-expense/:userId', async (req, res) => {
     const { amount, description, date, category } = req.body;
     console.log('add expense', req.body);
     try {
-       // const user = await User.findById(req.params.userId);
+       
         const expense = new Expense({ amount, description, date, category, user: req.params.userId });
         expense.save();
         console.log('expense added', expense);

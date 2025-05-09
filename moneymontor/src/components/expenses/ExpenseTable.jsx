@@ -14,21 +14,21 @@ export default function ExpenseTable() {
   const [searchText, setSearchText] = useState('');
   const [pageSize, setPageSize] = useState(5);
 
-  // Format currency
+  
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'PKR',
     }).format(amount);
   };
 
-  // Format date
+  
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Handle delete expense
+  
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this expense?')) {
       try {
@@ -43,7 +43,7 @@ export default function ExpenseTable() {
     }
   };
 
-  // Filter expenses based on search text
+  
   const filteredExpenses = details?.allExpenses ? 
     details.allExpenses.filter(expense => 
       expense.category.toLowerCase().includes(searchText.toLowerCase()) || 

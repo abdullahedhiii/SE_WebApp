@@ -5,8 +5,8 @@ const expenseSchema = new mongoose.Schema({
     description: { type: String, required: false },
     date: { type: Date, required: true },
     category:{type: String, required: true},
-    organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: false },//for organization expenses
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },//for individual expenses
+    organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: false },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
     created_at: { type: Date, default: Date.now },
 });
 

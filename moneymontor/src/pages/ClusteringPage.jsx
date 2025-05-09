@@ -15,14 +15,14 @@ export default function ClusteringPage() {
   const [clusters, setClusters] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState('default'); // 'default', 'amount', 'date'
+  const [sortBy, setSortBy] = useState('default'); 
   const { user } = useUser();
 
   useEffect(() => {
     const fetchClusters = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/clustering/${user._id}`);
-        // The response has a 'labels' property containing the clusters
+        
         if(response.data.message){
           setError(response.data.message);
           setLoading(false);
@@ -44,13 +44,13 @@ export default function ClusteringPage() {
   const getClusterColor = (label) => {
     switch (label) {
       case 'Low Spending':
-        return '#4CAF50'; // Green
+        return '#4CAF50'; 
       case 'Moderate Spending':
-        return '#FF9800'; // Orange
+        return '#FF9800'; 
       case 'High Spending':
-        return '#F44336'; // Red
+        return '#F44336'; 
       default:
-        return '#2196F3'; // Blue as default
+        return '#2196F3'; 
     }
   };
 
@@ -231,7 +231,7 @@ export default function ClusteringPage() {
                       </Typography>
                     </Box>
                     <Typography variant="h6">
-                      ${stats.total ? stats.total.toLocaleString() : '0'}
+                      Rs.{stats.total ? stats.total.toLocaleString() : '0'}
                     </Typography>
                   </Box>
                   
@@ -239,11 +239,11 @@ export default function ClusteringPage() {
                     <Grid container spacing={2}>
                       <Grid item xs={4}>
                         <Typography variant="subtitle2" color="text.secondary">Total Spent</Typography>
-                        <Typography variant="h6">${stats.total ? stats.total.toLocaleString() : 0}</Typography>
+                        <Typography variant="h6">Rs.{stats.total ? stats.total.toLocaleString() : 0}</Typography>
                       </Grid>
                       <Grid item xs={4}>
                         <Typography variant="subtitle2" color="text.secondary">Avg. Expense</Typography>
-                        <Typography variant="h6">${stats.avg ? stats.avg.toLocaleString() : 0}</Typography>
+                        <Typography variant="h6">Rs.{stats.avg ? stats.avg.toLocaleString() : 0}</Typography>
                       </Grid>
                       <Grid item xs={4}>
                         <Typography variant="subtitle2" color="text.secondary">Expenses</Typography>
@@ -275,7 +275,7 @@ export default function ClusteringPage() {
                                 {exp.category}
                               </Typography>
                               <Typography variant="subtitle1" fontWeight={700}>
-                                ${typeof exp.amount === 'number' ? exp.amount.toLocaleString() : exp.amount}
+                                Rs.{typeof exp.amount === 'number' ? exp.amount.toLocaleString() : exp.amount}
                               </Typography>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>

@@ -23,18 +23,18 @@ import axios from 'axios';
 import { useUser } from '../../contexts/UserContext';
 import Alert from '@mui/material/Alert';
 const roles = [
-  // { value: 'admin', label: 'Administrator' },
+  
   { value: 'contributor', label: 'Contributor' },
   { value: 'viewer', label: 'Viewer (Read-only)' },
 ];
 
 const avatarColors = [
-  '#6C63FF', // Purple
-  '#00C9A7', // Teal
-  '#FFD93D', // Yellow
-  '#FF6B6B', // Red
-  '#4DACFF', // Blue
-  '#43A047', // Green
+  '#6C63FF', 
+  '#00C9A7', 
+  '#FFD93D', 
+  '#FF6B6B', 
+  '#4DACFF', 
+  '#43A047', 
 ];
 
 export default function AddFamilyMemberForm({ open, onClose, onSave }) {
@@ -80,7 +80,7 @@ export default function AddFamilyMemberForm({ open, onClose, onSave }) {
 
   const validate = () => {
 
-    // if (!member.name.trim()) newErrors.name = 'Name is required';
+    
     if (!member?.email?.trim()) {
       setError('Email is required');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member?.email)) {

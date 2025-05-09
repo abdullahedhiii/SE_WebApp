@@ -1,6 +1,6 @@
 import { createContext, useState, useContext } from 'react';
 import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
+
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
@@ -51,7 +51,7 @@ export function UserProvider({ children }) {
             setUser(response.data.user);
             await fetchUserDetails(response.data.user._id);
             await fetchAlerts(response.data.user._id);
-            // if(user._id) navigate('/home');
+            
         } catch (error) {
             setError(error.response.data.message);
         }
@@ -67,6 +67,8 @@ export function UserProvider({ children }) {
                  {withCredentials: true}
                 );
             setUser(response.data.user);
+            await fetchUserDetails(response.data.user._id);
+
             console.log(response.data.user,'on register');
         } catch (error) {
             setError(error.response.data.message);

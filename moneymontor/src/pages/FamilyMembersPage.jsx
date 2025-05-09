@@ -86,7 +86,7 @@ export default function FamilyMembersPage() {
   };
 
   const handleEditMember = (memberId) => {
-    // Future functionality to edit members
+    
     console.log('Edit member:', memberId);
   };
 
@@ -175,7 +175,7 @@ export default function FamilyMembersPage() {
           </Typography>
         </Box>
         
-       {user.user_type === 'Organization' && <Button 
+       {user.user_type === 'organization' && <Button 
           variant="contained" 
           startIcon={<AddIcon />} 
           onClick={() => setIsAddModalOpen(true)}

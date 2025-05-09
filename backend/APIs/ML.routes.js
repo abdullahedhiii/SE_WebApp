@@ -35,7 +35,7 @@ router.get('/clustering/:user_id', async (req, res) => {
     if (inputData.length === 0) {
       return res.status(200).json({ message: 'No valid data found to perform clustering.' });
     }
-  
+  console.log(inputData);
     const pyProcess = spawn('python', [path.join(__dirname, '../MachineLearningAlgos/Clustering.py')]);
   
     pyProcess.stdin.write(JSON.stringify(inputData)); // Send data

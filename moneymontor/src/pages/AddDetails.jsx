@@ -33,7 +33,7 @@ const AddDetails = () => {
         setError('');
         setSuccess('');
 
-        // Validate inputs
+        
         if (!info.budget || !info.income) {
             setError('Please fill all required fields');
             setIsSubmitting(false);
@@ -46,10 +46,10 @@ const AddDetails = () => {
                 info, 
                 { withCredentials: true }
             );
-            // console.log('response on add details',response.data);
-            // const updatedUser = { ...user, ...response.data.user };
+            
+            
             setUser(response.data.user);
-            // console.log(updatedUser,'on add details');
+            
             setSuccess('Details added successfully');
             toast.success('Details added successfully');
             
@@ -72,7 +72,7 @@ const AddDetails = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                bgcolor: 'rgba(255, 0, 32, 0.03)', // subtle red-tint background
+                bgcolor: 'rgba(255, 0, 32, 0.03)', 
                 background: {
                     xs: 'linear-gradient(135deg, #fff 60%, #ffe5e5 100%)',
                     md: 'linear-gradient(120deg, #fff 70%, #fff0f0 100%)',
@@ -86,7 +86,7 @@ const AddDetails = () => {
                     minWidth: 320,
                     maxWidth: 400,
                     borderRadius: 5,
-                    boxShadow: '0 8px 32px 0 rgba(255,0,32,0.10)', // soft red shadow
+                    boxShadow: '0 8px 32px 0 rgba(255,0,32,0.10)', 
                     background: '#fff',
                     border: '1.5px solid #ffe5e5',
                 }}

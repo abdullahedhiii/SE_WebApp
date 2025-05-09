@@ -23,10 +23,10 @@ export default function ExpenseForm({ onAdd }) {
   const {user, details, fetchUserDetails} = useUser();
   const [submitting, setSubmitting] = React.useState(false);
 
-  // Get user categories or provide default ones
+  
   const categoryOptions = details?.uniqueCategories || ['Groceries', 'Transport', 'Entertainment', 'Utilities', 'Rent'];
   
-  // Field styles
+  
   const fieldStyle = {
     '& .MuiOutlinedInput-root': {
       borderRadius: 2,

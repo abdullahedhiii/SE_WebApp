@@ -124,13 +124,13 @@ console.log(details,'details on dashboard page');
                      Expenses This Month
                     </Typography>
                     <Typography variant="h5" fontWeight={700} color="text.primary">
-                    {details.totalThisMonth ?  `Rs.${details?.totalThisMonth}` :'No Expenses Added'}
+                    {details?.totalThisMonth ?  `Rs.${details?.totalThisMonth}` :'No Expenses Added'}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                      <ArrowDownwardOutlinedIcon sx={{ color: 'error.main', fontSize: 16, mr: 0.5 }} />
-                      <Typography variant="caption" color="error.main" fontWeight={600}>
+                      {/* <ArrowDownwardOutlinedIcon sx={{ color: 'error.main', fontSize: 16, mr: 0.5 }} /> */}
+                      {/* <Typography variant="caption" color="error.main" fontWeight={600}>
                         {details.percentageChange ? `${details?.percentageChange}% from last month` : ''}
-                      </Typography>
+                      </Typography> */}
                     </Box>
                   </CardContent>
                 </Card>
@@ -264,19 +264,7 @@ console.log(details,'details on dashboard page');
             </Box>
             
             {details?.goals?.map((goal) => (
-            //    {
-            //     "_id": "68147f67903fda5ed15f3f7f",
-            //     "description": "I want to buy a new phone",
-            //     "category": "Electronics",
-            //     "amount": 1000,
-            //     "amount_saved": 250,
-            //     "startDate": "2025-05-02T00:00:00.000Z",
-            //     "endDate": "2025-06-20T00:00:00.000Z",
-            //     "color": "#d32f2f",
-            //     "user": "6813599f311b625cfd36871a",
-            //     "__v": 0,
-            //     "progress": 25
-            // }
+
              <Box key={goal._id} sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography variant="body2" fontWeight={600} color="text.primary">

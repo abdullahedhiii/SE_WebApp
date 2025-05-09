@@ -16,20 +16,12 @@ import NotFoundPage from './pages/NotFoundPage';
 import RegisterOrganisation from './components/auth/RegisterOrganisation';
 import AddDetails from './pages/AddDetails';
 import { useUser } from './contexts/UserContext';
-// import { useNavigate } from 'react-router-dom';
+
 
 
 function App() {
   const {user} = useUser();
-  // const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   console.log('app mounted');
-  //   if(!user){
-  //    window.location.href = '/';
-  //   }
-  // }, [user]);
-  
   return (
     <>
       <CssBaseline />

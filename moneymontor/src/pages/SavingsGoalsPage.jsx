@@ -43,7 +43,6 @@ export default function SavingsGoalsPage() {
   };
 
   const handleEditGoal = (goalId) => {
-    // Future functionality to edit goals
     console.log('Edit goal:', goalId);
   };
 

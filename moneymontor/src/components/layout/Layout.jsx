@@ -27,7 +27,7 @@ const sampleAlerts = [
   { id: 2, type: 'info', message: 'Forecast: Spending may increase next month.' },
 ];
 
-  //GET http://localhost:5173/src/contexts/userContext.js?t=1746091401617 net::ERR_ABORTED 404 (Not Found)
+  
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [aiMenuOpen, setAiMenuOpen] = useState(false);
@@ -50,7 +50,7 @@ export default function Layout() {
   
   const conditionalItems = [];
   
-  if (user && (user.user_type === 'Organization' || user.organisation_role === 'contributor')) {
+  if (user && (user.user_type === 'organization' || user.organisation_role === 'contributor')) {
     conditionalItems.push({
       text: 'Expenses',
       icon: <ReceiptLongOutlinedIcon fontSize="medium" />,
@@ -58,11 +58,11 @@ export default function Layout() {
     });
   }
   
-  // AI features are now grouped
+  
   const aiFeatures = [
     { text: 'Clustering', icon: <GroupWorkOutlinedIcon fontSize="medium" />, path: '/home/clustering' },
     { text: 'Forecast', icon: <TimelineOutlinedIcon fontSize="medium" />, path: '/home/forecast' },
-    // { text: 'Insights', icon: <InsightsOutlinedIcon fontSize="medium" />, path: '/home/insights' },
+    
   ];
   
 
@@ -88,7 +88,7 @@ export default function Layout() {
     });
   }
   
-  // Final nav items array
+  
   const navItems = [...baseItems, ...conditionalItems];
   
   const handleDrawerToggle = () => {

@@ -25,7 +25,7 @@ const options = {
       borderWidth: 1,
       callbacks: {
         label: function(context) {
-          return `$${context.parsed.y.toLocaleString()}`;
+          return `Rs.${context.parsed.y.toLocaleString()}`;
         },
         title: function(context) {
           return context[0].label;
@@ -44,7 +44,7 @@ const options = {
         color: '#00C9A7', 
         font: { weight: 'bold' },
         callback: function(value) {
-          return '$' + value.toLocaleString();
+          return 'Rs.' + value.toLocaleString();
         }
       },
     },
@@ -140,7 +140,7 @@ export default function ForecastPage() {
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <CircularProgress size={60} thickness={4} color="secondary" />
+        <CircularProgress size={60} thickness={4} />
         <Typography variant="h6" sx={{ ml: 2, color: 'text.primary' }}>Generating your spending forecast...</Typography>
       </Box>
     );
@@ -251,7 +251,7 @@ export default function ForecastPage() {
                   {formatDate(week.ds)}
                 </Typography>
                 <Typography variant="h4" fontWeight={800} color="#6C63FF">
-                  ${Math.round(week.yhat).toLocaleString()}
+                  Rs.{Math.round(week.yhat).toLocaleString()}
                 </Typography>
                 
                 {index > 0 && (

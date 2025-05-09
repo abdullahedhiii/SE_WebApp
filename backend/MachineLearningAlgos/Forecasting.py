@@ -5,7 +5,7 @@ import json
 
 def forecast_expenses(data):
     df = pd.DataFrame(data)
-    df['ds'] = pd.to_datetime(df['date']).dt.tz_localize(None)  # Remove timezone
+    df['ds'] = pd.to_datetime(df['date']).dt.tz_localize(None)  
     df['y'] = df['amount']
     df = df[['ds', 'y']]
 
@@ -47,6 +47,6 @@ if __name__ == "__main__":
     try:
         data = json.loads(sys.stdin.read())
         result = forecast_expenses(data)
-        print(json.dumps(result, default=str))  # Convert datetime to string
+        print(json.dumps(result, default=str))  
     except Exception as e:
         print(json.dumps({"error": str(e)}))
